@@ -4,7 +4,25 @@
 
 Android WorkManager 練習
 
-## API
+## Worker
+
+```
+class FirstWork(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+
+   override fun doWork(): Result {
+        // TODO("Not yet implemented") Worker 工作內容
+        return Result.success()
+    }
+}
+```
+
+doWork() return value
+
+| 參數| 說明 |
+| ----------- | -----------|
+| Result.success() | 成功 |
+| Result.failure() | 失敗 |
+| Result.retry() | 需要重新嘗試 |
 
 ## WorkRequest
 
@@ -13,22 +31,33 @@ Android WorkManager 練習
 | OneTimeWorkRequest | 只執行一次工作 |
 | PeriodicWorkRequest |定期工作|
 
-***Create One Time Work Request***
+### OneTimeWorkRequest
 
-```
-val oneWorkRequest = OneTimeWorkRequestBuilder<MyWork>().build()
-```
+OneTimeWorkRequestBuilder<MyWork>().build()
 
-***Create Periodic Work Request***
+#### 參數
 
-```
-val periodicWorkRequest = PeriodicWorkRequestBuilder<MyWork>(15, TimeUnit.MINUTES)
-    // Additional configuration
-    .build()
-```
+| 參數| 說明 |
+| ----------- | -----------|
+| MyWork | 要執行Worker Class |
+| backoffDelay | 延遲時間 |
+| timeUnit | 時間單位 |
 
+### PeriodicWorkRequest
 
-## Constraints Worker 觸發條件
+PeriodicWorkRequestBuilder<MyWork>(repeatInterval, TimeUnit.MINUTES).build()
+
+#### 參數
+
+| 參數| 說明 |
+| ----------- | -----------|
+| MyWork | 重新執行策略 |
+| backoffDelay | 延遲時間 |
+| timeUnit | 時間單位 |
+
+> 最短執行間隔時間為 15 分鐘（
+
+### Constraints Worker 觸發條件
 
 setConstraints()
 
@@ -48,7 +77,7 @@ Constraints.Builder()
     .build()
 ```
 
-### NetworkType
+#### NetworkType
 
 | 參數| 說明 |
 | ----------- | -----------|
@@ -58,8 +87,7 @@ Constraints.Builder()
 | NOT_ROAMING | 使用行動數據網路|
 | UNMETERED | 使用Wi-Fi網路 |
 
-
-##  重新執行策略
+###  重新執行策略
 
 setBackoffCriteria(BackoffPolicy, long, TimeUnit)
 
@@ -68,6 +96,27 @@ setBackoffCriteria(BackoffPolicy, long, TimeUnit)
 | backoffPolicyaddTag | 重新執行策略 |
 | backoffDelay | 延遲時間 |
 | timeUnit | 時間單位 |
+
+## WorkManager
+
+### 註冊
+
+| method| 說明 |
+|--|--|
+| enqueue |  |
+| enqueueUniquePeriodicWork | 只用於PeriodicWorkRequest|
+
+#### enqueueUniquePeriodicWork
+
+enqueueUniquePeriodicWork(uniqueWorkName, existingPeriodicWorkPolicy, periodicWork)
+
+|參數| 說明|
+|--|--|
+| uniqueWorkName | WorkerRequest名稱  |
+| existingPeriodicWorkPolicy | 重複時執行策略 |
+| periodicWork | WorkerRequest |
+
+### 取消
 
 ## REFERENCE
 
